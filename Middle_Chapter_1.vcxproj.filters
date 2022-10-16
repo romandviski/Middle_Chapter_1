@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="UE_Middle_Chapter_1.cpp">
+    <ClCompile Include="Middle_Chapter_1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

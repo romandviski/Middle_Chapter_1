@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{7fc65914-9c83-46e7-b861-37d2aef66a0d}</ProjectGuid>
-    <RootNamespace>UEMiddleChapter1</RootNamespace>
+    <ProjectGuid>{db6c3db0-2c93-446c-b811-888eac0b38a6}</ProjectGuid>
+    <RootNamespace>MiddleChapter1</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -139,7 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="UE_Middle_Chapter_1.cpp" />
+    <ClCompile Include="Middle_Chapter_1.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
