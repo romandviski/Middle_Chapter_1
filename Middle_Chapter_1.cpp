@@ -1,119 +1,224 @@
 #include <iostream>
+#include <string>
+#include <vector>
+#include <iostream>
 //https://itnan.ru/post.php?c=1&p=308890
 
-const int N = 2;
 
-class User
+
+class Vector
 {
-	std::string* nickname;
-	double* score;
-	int** itemsID;
 public:
-	User()
+	Vector()
 	{
-		this->nickname = new std::string();
-		this->itemsID = new int* [0];
-		this->score = 0;
+		x = 0;
+		y = 0;
+		z = 0;
 	}
 
-	User(std::string nickname, double score, int** itemsID)
+	Vector(float x, float y, float z)
 	{
-		this->nickname = new std::string(nickname);
-		this->score = new double(score);
-		this->itemsID = new int* [N];
-
-		for (int i = 0; i < N; i++)
-			this->itemsID[i] = new int[N];
-
-		for (int x = 0; x < N; x++)
-			for (int y = 0; y < N; y++)
-				this->itemsID[x][y] = itemsID[x][y];
+		this->x = x;
+		this->y = y;
+		this->z = z;
 	}
 
-	User(const User& other)
+	operator float()
 	{
-		std::cout << "copy constructor calling" << std::endl;
-		nickname = new std::string(*other.nickname);
-		score = new double(*other.score);
-
-		this->itemsID = new int* [N];
-		for (int i = 0; i < N; i++)
-			this->itemsID[i] = new int[N];
-
-		for (int x = 0; x < N; x++)
-			for (int y = 0; y < N; y++)
-				this->itemsID[x][y] = other.itemsID[x][y];
+		return sqrt(x * x + y * y + z * z);
 	}
 
-	~User()
+	friend Vector operator+(const Vector& a, const Vector& b);
+	friend Vector operator-(const Vector& a, const Vector& b);
+	friend Vector operator*(const Vector& a, const int b);
+	friend bool operator>(const Vector& a, const Vector& b);
+	friend std::ostream& operator<<(std::ostream& out, const Vector& v);
+	friend std::istream& operator>>(std::istream& stream, Vector& v);
+
+
+	float operator[](int index)
 	{
-		std::cout << "destructor calling" << std::endl;
-		delete nickname;
-		delete itemsID;
-		delete score;
+		switch (index)
+		{
+		case 0:
+			return x;
+			break;
+		case 1:
+			return y;
+			break;
+		case 2:
+			return z;
+			break;
+		default:
+			std::cout << "index error";
+			return 0;
+		}
 	}
 
-	friend std::istream& operator>> (std::istream& in, User& user);
-	friend std::ostream& operator<<(std::ostream& out, const User& user);
-
-	User& operator=(const User& other)
-	{
-		nickname = new std::string(*other.nickname);
-		score = new double(*other.score);
-
-		this->itemsID = new int* [N];
-		for (int i = 0; i < N; i++)
-			this->itemsID[i] = new int[N];
-
-		for (int x = 0; x < N; x++)
-			for (int y = 0; y < N; y++)
-				this->itemsID[x][y] = other.itemsID[x][y];
-
-		return *this;
-	}
+private:
+	float x;
+	float y;
+	float z;
 };
 
-std::istream& operator>>(std::istream& in, User& user)
+Vector operator+(const Vector& a, const Vector& b)
 {
-	in >> *user.nickname >> *user.score;
-	return in;
+	return Vector(a.x + b.x, a.y + b.y, a.z + b.z);
 }
 
-std::ostream& operator<<(std::ostream& out, const User& user)
+Vector operator-(const Vector& a, const Vector& b)
 {
-	out << *user.nickname << "\nScore: " << *user.score << "\nitemsID:\n";
-	for (int x = 0; x < N; x++) {
-		for (int y = 0; y < N; y++)
-			out << user.itemsID[x][y] << " ";
-		out << "\n";
-	}
+	return Vector(a.x - b.x, a.y - b.y, a.z - b.z);
+}
+
+Vector operator*(const Vector& a, const int b)
+{
+	return Vector(a.x * b, a.y * b, a.z * b);
+}
+
+bool operator>(const Vector& a, const Vector& b)
+{
+
+	return false;
+}
+
+std::ostream& operator<<(std::ostream& out, const Vector& v)
+{
+	out << v.x << ' ' << v.y << ' ' << v.z;
 	return out;
 }
 
+std::istream& operator>>(std::istream& stream, Vector& v)
+{
+	std::cout << "Input vector3:\nX:";
+	std::cin >> v.x;
+	std::cout << "Y:";
+	std::cin >> v.y;
+	std::cout << "Z:";
+	std::cin >> v.z;
+	std::cout << '\n';
+	return stream;
+}
+
+class Item
+{
+	std::string ItemName;
+public:
+	Item()
+	{
+		ItemName = "None";
+	}
+	Item(std::string inItemName)
+	{
+		ItemName = inItemName;
+	}
+	std::string ShowItemName()
+	{
+		//std::cout << ItemName << std::endl;
+		return ItemName;
+	}
+};
+
+class Guild;
+
+class Player
+{
+	Vector Location;
+	std::string PlayerName;
+	Item* MainItem;
+	std::vector<Guild*> Guilds;
+public:
+	Player()
+	{
+		PlayerName = "none";
+	}
+
+	Player(std::string inPlayerName, Vector InitLocation)
+	{
+		PlayerName = inPlayerName;
+		Location = InitLocation;
+	}
+
+	void ShowPlayerInfo()
+	{
+		std::cout << PlayerName << " is at " << Location << std::endl;
+		if (MainItem)
+		{
+			std::cout << PlayerName << " have " << MainItem->ShowItemName() << std::endl;
+		}
+		else
+		{
+			std::cout << PlayerName << " dont have item" << std::endl;
+		}
+	}
+	void SetNewItem(Item* newItem)
+	{
+		MainItem = newItem;
+	}
+
+	void JoinGuild(Guild* guildToJoin)
+	{
+		Guilds.push_back(guildToJoin);
+	}
+
+	friend class Guild;
+};
+
+class Guild
+{
+	std::vector<Player*> Players;
+public:
+	void AddNewPlayer(Player* newPlayer)
+	{
+		newPlayer->JoinGuild(this);
+		Players.push_back(newPlayer);
+	}
+
+	void RemovePlayer(Player* PlayerToRemove)
+	{
+		//Players.push_back(PlayerToRemove);
+	}
+};
+
+class PlayerParty
+{
+	Player** players;
+	int CurrentPlayersNum;
+public:
+	PlayerParty()
+	{
+		CurrentPlayersNum = 0;
+		players = new Player * [4];
+	}
+	void AddPlayerToParty(Player* newPlayer)
+	{
+		players[CurrentPlayersNum] = newPlayer;
+		CurrentPlayersNum++;
+	}
+	void ShowAllPlayersInfo()
+	{
+		for (int i = 0; i < CurrentPlayersNum; i++)
+		{
+			players[i]->ShowPlayerInfo();
+		}
+	}
+};
+
 int main()
 {
-	int** itemsID = new int* [N];
-	for (int i = 0; i < N; i++)
-		itemsID[i] = new int[N];
-	for (int x = 0; x < N; x++)
-		for (int y = 0; y < N; y++)
-			itemsID[x][y] = x + y;
-
-	User Mikhail("romandviski", 2.28, itemsID);
-
-	delete[] itemsID;
-
-	User Vasyan = Mikhail;
-	std::cout << Mikhail << std::endl;
-	std::cout << Vasyan << std::endl;
-
+	Player* PlayerA = new Player("Vasyan", Vector(4,0,4));
+	Player* PlayerB = new Player("Petyan", Vector(7, 7, 7));
+	Item* Sword = new Item("Sword");
+	PlayerA->SetNewItem(Sword);
 	std::cout << std::endl;
 
-	std::cin >> Vasyan;
+	PlayerParty* MainParty = new PlayerParty;
+	MainParty->AddPlayerToParty(PlayerA);
+	MainParty->AddPlayerToParty(PlayerB);
+	MainParty->ShowAllPlayersInfo();
 	std::cout << std::endl;
-	std::cout << Vasyan << std::endl;
 
-	std::cout << '\n' << "===============================" << '\n';
+	std::cout << std::endl << "===============================" << std::endl;
 	//system("pause");
 	return 0;
 }
